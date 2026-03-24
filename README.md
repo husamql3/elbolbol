@@ -1,5 +1,5 @@
 # frontend interview questions
 
-- [JavaScript](./js.md)
-- [React](./react.md)
-- [TypeScript](./ts.md)
+- [JavaScript](./questions/js.md)
+- [React](./questions/react.md)
+- [TypeScript](./questions/ts.md)
