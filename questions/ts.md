@@ -24,14 +24,14 @@ TypeScript supports primitive types like `string`, `number`, `boolean`, `undefin
 </details>
 
 <details>
-<summary>What is the difference between `type` and `interface`?</summary>
+<summary>What is the difference between <code>type</code> and <code>interface</code>?</summary>
 
 `type` and `interface` both allow you to define custom types, but `interface` is better suited for defining shapes of objects, while `type` can handle more complex types such as unions and tuples.
 
 </details>
 
 <details>
-<summary>What is your opinion on `JSDoc` as an alternative to TypeScript?</summary>
+<summary>What is your opinion on <code>JSDoc</code> as an alternative to TypeScript?</summary>
 
 JSDoc is a documentation tool that can annotate types in JavaScript, but it doesn't offer the same `compile-time` safety as TypeScript. JSDoc lacks many features TypeScript has, such as static analysis, which ensures code correctness before execution.
 
@@ -45,21 +45,21 @@ A union type allows a value to be one of several types. It uses the `|` operator
 </details>
 
 <details>
-<summary>How does TypeScript handle type assertions? Why should you use `as`?</summary>
+<summary>How does TypeScript handle type assertions? Why should you use <code>as</code>?</summary>
 
 Type assertions (using `as` or the angle bracket syntax) tell the TypeScript compiler that you know the type better than it does. It's used when you're sure about the type but TypeScript cannot infer it correctly.
 
 </details>
 
 <details>
-<summary>What is the difference between the `unknown` and `any` types?</summary>
+<summary>What is the difference between the <code>unknown</code> and <code>any</code> types?</summary>
 
 `unknown` is safer than `any`. While `any` disables all type-checking, `unknown` forces you to perform type checks before manipulating the value.
 
 </details>
 
 <details>
-<summary>What is the `never` type, and when would you use it?</summary>
+<summary>What is the <code>never</code> type, and when would you use it?</summary>
 
 The `never` type represents values that never occur. It's often used for functions that throw errors or infinite loops.
 
@@ -94,14 +94,14 @@ Conditional types allow you to define a type that depends on a condition — sim
 </details>
 
 <details>
-<summary>What is the difference between the utility types `Partial<T>` and `Pick<T, K>`?</summary>
+<summary>What is the difference between the utility types <code>Partial&lt;T&gt;</code> and <code>Pick&lt;T, K&gt;</code>?</summary>
 
 `Partial<T>` makes all properties in `T` optional. `Pick<T, K>` extracts specific properties from `T`.
 
 </details>
 
 <details>
-<summary>What does `keyof` do?</summary>
+<summary>What does <code>keyof</code> do?</summary>
 
 `keyof` creates a union of the keys of an object type
 
@@ -110,7 +110,7 @@ Conditional types allow you to define a type that depends on a condition — sim
 <details>
 <summary>What are the discriminated unions, and how would you handle type-safe error handling with it?</summary>
 
-A **discriminated union** is a TypeScript pattern where you combine multiple types into one union, and each member has a **common literal property** (the *discriminator*) that uniquely identifies which type it is.
+A **discriminated union** is a TypeScript pattern where you combine multiple types into one union, and each member has a **common literal property** (the _discriminator_) that uniquely identifies which type it is.
 
 </details>
 
@@ -122,7 +122,7 @@ Template literal types allow you to create new string types by combining unions 
 </details>
 
 <details>
-<summary>What's the difference between `JSX.Element` and `React.ReactNode`?</summary>
+<summary>What's the difference between <code>JSX.Element</code> and <code>React.ReactNode</code>?</summary>
 
 `JSX.Element` refers to a React element returned by a component, while `React.ReactNode` includes anything renderable by React, like strings, numbers, or fragments
 

@@ -15,7 +15,7 @@ React is an open-source JavaScript library developed by Facebook for building us
 </details>
 
 <details>
-<summary>What is the difference between `state` and `props` in React?</summary>
+<summary>What is the difference between <code>state</code> and <code>props</code> in React?</summary>
 
 - State is managed within the component, while props are passed from the parent
 - State can change over time, while props are immutable
@@ -24,7 +24,7 @@ React is an open-source JavaScript library developed by Facebook for building us
 </details>
 
 <details>
-<summary>What is the purpose of the `key` prop in React?</summary>
+<summary>What is the purpose of the <code>key</code> prop in React?</summary>
 
 The **`key`** prop is a special attribute you need to include when creating lists of elements in React. It is crucial for helping React identify which items have changed, been added, or removed, thereby optimizing the rendering process.
 
@@ -68,9 +68,9 @@ Why `key` is important **→** Efficient updates, Avoiding bugs, and Performance
 </details>
 
 <details>
-<summary>Explain the difference between `useMemo` and `useCallback`?</summary>
+<summary>Explain the difference between <code>useMemo</code> and <code>useCallback</code>?</summary>
 
-Both are React hooks for **memoization,** they cache a value to avoid expensive recalculations on every render. The key difference is *what* they memoize.
+Both are React hooks for **memoization,** they cache a value to avoid expensive recalculations on every render. The key difference is _what_ they memoize.
 
 - `useMemo` — memoizes a **computed value**
   - Use it when you want to avoid re-running an expensive calculation
@@ -94,7 +94,7 @@ Both are React hooks for **memoization,** they cache a value to avoid expensive 
 <summary>How do you handle asynchronous data loading in React applications?</summary>
 
 - **Using `useEffect` and `useState`**
-  - **Initialize state** → ****`const [data, setData] = useState(null);`
+  - **Initialize state** → \*\*\*\*`const [data, setData] = useState(null);`
   - **Fetch data** → using `useEffect` when the component mounts
   - **Update state** → `setData(result);`
 - **Handling errors:** It's important to handle errors that may occur during data fetching. You can use a **`try-catch`** block within the **`useEffect`** to catch and handle errors.
@@ -102,7 +102,7 @@ Both are React hooks for **memoization,** they cache a value to avoid expensive 
 
 ```jsx
 function useFetch(url) {
- // fetching
+  // fetching
   return { data, loading, error };
 }
 ```
@@ -110,7 +110,7 @@ function useFetch(url) {
 </details>
 
 <details>
-<summary>How do you decide between using `state`, `context`, and `external state managers`?</summary>
+<summary>How do you decide between using <code>state</code>, <code>context</code>, and <code>external state managers</code>?</summary>
 
 - **React state:** React state is best suited for managing local state within a single component. It is simple to use and provides a straightforward way to handle state that does not need to be shared across multiple components.
   - When the state is only relevant to a single component
@@ -139,7 +139,7 @@ function useFetch(url) {
 </details>
 
 <details>
-<summary>What is the difference between `useEffect` and `useLayoutEffect`?</summary>
+<summary>What is the difference between <code>useEffect</code> and <code>useLayoutEffect</code>?</summary>
 
 - `useEffect` — after paint (async)
 
@@ -161,7 +161,7 @@ useLayoutEffect(() => {
 </details>
 
 <details>
-<summary>What is `React Fiber` and how is it an improvement over the previous approach?</summary>
+<summary>What is <code>React Fiber</code> and how is it an improvement over the previous approach?</summary>
 
 React Fiber is a re-implementation of React's core algorithm for rendering and reconciliation. It was introduced in React 16 to address limitations in the previous stack-based algorithm
 
@@ -173,7 +173,7 @@ React Fiber is a re-implementation of React's core algorithm for rendering and r
   With Fiber, React can work on multiple tasks concurrently. This means that React can start rendering updates while still processing other tasks, leading to a smoother and more responsive user experience.
 
   > rendering was **synchronous and uninterruptible** — once React started rendering a tree, it blocked the main thread until it finished. Concurrent React makes rendering **interruptible** — React can pause work, prioritize urgent updates, and resume later.
-  >
+
 - **Error boundaries**
   React Fiber introduced error boundaries, which allow developers to catch and handle errors in the component tree gracefully. This was not possible with the previous stack-based algorithm, where errors could cause the entire application to crash.
 - **Improved support for animations**
@@ -182,7 +182,7 @@ React Fiber is a re-implementation of React's core algorithm for rendering and r
 </details>
 
 <details>
-<summary>What is the `useRef` hook and what are its common use cases?</summary>
+<summary>What is the <code>useRef</code> hook and what are its common use cases?</summary>
 
 The `useRef` hook creates a mutable object that persists across renders without causing re-renders. It is commonly used to access DOM elements or store mutable values.
 
@@ -197,17 +197,16 @@ functions in React that take a component as an argument and return a new compone
 - Abstract and reuse component logic
 - Enhance components with additional props or state
 
-|  | **HOC** | **Hooks** |
-| --- | --- | --- |
-| **Boilerplate** | High | Low |
-| **Composability** | Wrapper hell | Flat, linear |
-| **Props collision** | ⚠️ Risk | ❌ None |
-| **Debugging** | Hard (nested tree) | Easy |
-| **Error boundaries** | ✅ Only option | ❌ Not possible |
-| **Best for** | Error boundaries, injecting JSX wrappers | Everything else |
+|                      | **HOC**                                  | **Hooks**       |
+| -------------------- | ---------------------------------------- | --------------- |
+| **Boilerplate**      | High                                     | Low             |
+| **Composability**    | Wrapper hell                             | Flat, linear    |
+| **Props collision**  | ⚠️ Risk                                  | ❌ None         |
+| **Debugging**        | Hard (nested tree)                       | Easy            |
+| **Error boundaries** | ✅ Only option                           | ❌ Not possible |
+| **Best for**         | Error boundaries, injecting JSX wrappers | Everything else |
 
 > Hooks replaced HOCs for **logic reuse**. But HOCs still have a place for **structural wrapping,** injecting wrapper JSX, error boundaries, or decorating third-party components you don't control.
->
 
 </details>
 
@@ -218,8 +217,8 @@ functions in React that take a component as an argument and return a new compone
 - **Composition:** Instead of extending, you **combine components** by passing them as props or children.
 - **Pattern 1** — **`children` prop (containment)**
   When a component doesn't know its children ahead of time
-- **Pattern 2** — ****Passing components as props (slots)
-  For more control over *where* things are placed:
+- **Pattern 2** — \**\*\*Passing components as props (slots)
+  For more control over *where\* things are placed:
 - **Pattern 3** — Higher Order Components (HOC)
   Wrapping a component to inject behavior
 
@@ -264,14 +263,14 @@ useEffect(() => {
 }, []);
 ```
 
-  2. `suppressHydrationWarning` for intentional differences
+2. `suppressHydrationWarning` for intentional differences
 
 ```jsx
 // For timestamps or truly unavoidable differences
 <time suppressHydrationWarning>{new Date().toLocaleString()}</time>
 ```
 
-  3. Mount guard pattern
+3. Mount guard pattern
 
 ```jsx
 const [mounted, setMounted] = useState(false);
@@ -285,50 +284,50 @@ return <ComponentThatNeedsBrowser />;
 </details>
 
 <details>
-<summary>`Next.js` rendering modes — `SSR`, `SSG`, `ISR`, `RSC`</summary>
+<summary><code>Next.js</code> rendering modes — <code>SSR</code>, <code>SSG</code>, <code>ISR</code>, <code>RSC</code></summary>
 
 1. **Client-Side Rendering (CSR):** The original React model. Server sends a bare HTML shell, browser downloads JS, React builds the DOM entirely on the client.
-`Server → empty <div id="root">`
-`Client → downloads JS → React renders → fetches data → renders again`
-**Good for:** Dashboards, admin panels, anything behind a login where SEO doesn't matter.
-**Bad for:** SEO, initial load performance (user sees blank screen while JS loads).
+   `Server → empty <div id="root">`
+   `Client → downloads JS → React renders → fetches data → renders again`
+   **Good for:** Dashboards, admin panels, anything behind a login where SEO doesn't matter.
+   **Bad for:** SEO, initial load performance (user sees blank screen while JS loads).
 2. **Static Site Generation (SSG):** HTML is generated **at build time**. The same HTML file is served to every user. Fastest possible delivery, can be served from a CDN.
-`Build time → generates HTML files`
-`Request    → CDN serves pre-built HTML instantly`
-**Good for:** Marketing pages, blogs, docs — content that doesn't change per user or per request.
-**Bad for:** Personalized content, frequently changing data.
+   `Build time → generates HTML files`
+   `Request    → CDN serves pre-built HTML instantly`
+   **Good for:** Marketing pages, blogs, docs — content that doesn't change per user or per request.
+   **Bad for:** Personalized content, frequently changing data.
 3. **Server-Side Rendering (SSR):** HTML is generated **on every request** on the server. Fresh data every time, but slower than SSG since there's no caching.
-`Request → server fetches data → generates HTML → sends to client`
-**Good for:** Pages that need fresh data and SEO — e.g. a product page with live inventory
-**Bad for:** High traffic pages where per-request cost adds up
+   `Request → server fetches data → generates HTML → sends to client`
+   **Good for:** Pages that need fresh data and SEO — e.g. a product page with live inventory
+   **Bad for:** High traffic pages where per-request cost adds up
 4. **Incremental Static Regeneration (ISR):** Pages are statically generated but **revalidated in the background** after a time window. Best of both SSG and SSR.
-`Build time  → generates HTML`
-`Request 1   → serves cached HTML`
-`Request 2   → serves cached HTML, triggers background regeneration`
-`Request 3   → serves newly regenerated HTML`
-**Good for:** E-commerce product pages, news articles, content that changes but not on every request
-**Bad for:** Data that must be real-time accurate
+   `Build time  → generates HTML`
+   `Request 1   → serves cached HTML`
+   `Request 2   → serves cached HTML, triggers background regeneration`
+   `Request 3   → serves newly regenerated HTML`
+   **Good for:** E-commerce product pages, news articles, content that changes but not on every request
+   **Bad for:** Data that must be real-time accurate
 5. **React Server Components (RSC):** Components themselves are split into **server** and **client,** server components run only on the server and never ship their JS to the browser.
-`Server components → rendered on server, zero JS bundle cost`
-`Client components → hydrated on client, interactive`
+   `Server components → rendered on server, zero JS bundle cost`
+   `Client components → hydrated on client, interactive`
 6. **Streaming SSR:** Instead of waiting for the entire page to render before sending HTML, React streams it in **chunks** as each piece becomes ready. Uses React's `Suspense` as the boundary
-`Request → server streams Header + Footer immediately`
-`        → SlowDataComponent streams in when its data resolves`
-`        → user sees progressive content instead of blank screen`
+   `Request → server streams Header + Footer immediately`
+   `        → SlowDataComponent streams in when its data resolves`
+   `        → user sees progressive content instead of blank screen`
 
-| Strategy | Where rendered | When | SEO | Fresh data | Speed |
-| --- | --- | --- | --- | --- | --- |
-| **CSR** | Client | Runtime | ❌ | ✅ | Slow initial |
-| **SSG** | Server | Build time | ✅ | ❌ | Fastest |
-| **SSR** | Server | Per request | ✅ | ✅ | Medium |
-| **ISR** | Server | Build + revalidate | ✅ | ✅ | Fast |
-| **RSC** | Server | Per request | ✅ | ✅ | Small bundle |
-| **Streaming** | Server | Per request (chunked) | ✅ | ✅ | Progressive |
+| Strategy      | Where rendered | When                  | SEO | Fresh data | Speed        |
+| ------------- | -------------- | --------------------- | --- | ---------- | ------------ |
+| **CSR**       | Client         | Runtime               | ❌  | ✅         | Slow initial |
+| **SSG**       | Server         | Build time            | ✅  | ❌         | Fastest      |
+| **SSR**       | Server         | Per request           | ✅  | ✅         | Medium       |
+| **ISR**       | Server         | Build + revalidate    | ✅  | ✅         | Fast         |
+| **RSC**       | Server         | Per request           | ✅  | ✅         | Small bundle |
+| **Streaming** | Server         | Per request (chunked) | ✅  | ✅         | Progressive  |
 
 </details>
 
 <details>
-<summary>`Next.js` FAQ Page Patterns — When to Use Which Rendering Mode?</summary>
+<summary><code>Next.js</code> FAQ Page Patterns — When to Use Which Rendering Mode?</summary>
 
 The decision tree comes down to three questions: **Does it need SEO? Does data change? Is it personalized?**
 
@@ -348,7 +347,7 @@ Is content personalized per user?
 </details>
 
 <details>
-<summary>`useRef` and `forwardRef` — DOM access, imperative handles</summary>
+<summary><code>useRef</code> and <code>forwardRef</code> — DOM access, imperative handles</summary>
 
 - `useRef` - two distinct use cases, The key insight: **`useRef` returns the same object every render.** Mutating `.current` doesn't cause a re-render — unlike `useState`.
   - Use case 1: DOM access
@@ -370,14 +369,14 @@ function TextInput() {
 }
 ```
 
-  - Use case 2: Persisting values across renders without triggering re-render
+- Use case 2: Persisting values across renders without triggering re-render
 
 ```jsx
 function Timer() {
   const intervalRef = useRef(null);
 
   function start() {
-    intervalRef.current = setInterval(() => console.log('tick'), 1000);
+    intervalRef.current = setInterval(() => console.log("tick"), 1000);
   }
 
   function stop() {
@@ -392,29 +391,29 @@ function Timer() {
 </details>
 
 <details>
-<summary>`Redux` vs `Zustand` vs `Context API`</summary>
+<summary><code>Redux</code> vs <code>Zustand</code> vs <code>Context API</code></summary>
 
-|  | Context API | Redux | Zustand |
-| --- | --- | --- | --- |
-| Bundle size | Zero | ~50kb | ~1kb |
-| Boilerplate | Low | High | Very low |
-| Re-render control | ❌ Poor | ✅ Selectors | ✅ Selectors |
-| DevTools | ❌ None | ✅ Excellent | ✅ Good |
-| Learning curve | None | Steep | Minimal |
-| Best for | Infrequent updates (theme, auth) | Large teams, complex state | Most modern apps |
+|                   | Context API                      | Redux                      | Zustand          |
+| ----------------- | -------------------------------- | -------------------------- | ---------------- |
+| Bundle size       | Zero                             | ~50kb                      | ~1kb             |
+| Boilerplate       | Low                              | High                       | Very low         |
+| Re-render control | ❌ Poor                          | ✅ Selectors               | ✅ Selectors     |
+| DevTools          | ❌ None                          | ✅ Excellent               | ✅ Good          |
+| Learning curve    | None                             | Steep                      | Minimal          |
+| Best for          | Infrequent updates (theme, auth) | Large teams, complex state | Most modern apps |
 
 </details>
 
 <details>
 <summary>Data Fetching Patterns</summary>
 
-|  | **useEffect** | **React Query** | **SWR** | **RSC** |
-| --- | --- | --- | --- | --- |
-| **Caching** | ❌ Manual | ✅ Built-in | ✅ Built-in | ✅ Server-side |
-| **Deduplication** | ❌ | ✅ | ✅ | ✅ |
-| **Bundle cost** | Zero | ~13kb | ~4kb | Zero |
-| **Real-time** | Manual | ✅ Polling/WS | ✅ Polling | ❌ |
-| **Best for** | Simple one-offs | Complex client state | Lightweight client | Next.js App Router |
+|                   | **useEffect**   | **React Query**      | **SWR**            | **RSC**            |
+| ----------------- | --------------- | -------------------- | ------------------ | ------------------ |
+| **Caching**       | ❌ Manual       | ✅ Built-in          | ✅ Built-in        | ✅ Server-side     |
+| **Deduplication** | ❌              | ✅                   | ✅                 | ✅                 |
+| **Bundle cost**   | Zero            | ~13kb                | ~4kb               | Zero               |
+| **Real-time**     | Manual          | ✅ Polling/WS        | ✅ Polling         | ❌                 |
+| **Best for**      | Simple one-offs | Complex client state | Lightweight client | Next.js App Router |
 
 </details>
 
@@ -434,7 +433,7 @@ export const tokens = {
 ```
 
 2. Primitive Components: Unstyled or minimally styled, maximally composable. These are the atoms.
-**The key rule:** primitives should be flexible enough that teams **never need to fork them**. Every reasonable variant should be a prop.
+   **The key rule:** primitives should be flexible enough that teams **never need to fork them**. Every reasonable variant should be a prop.
 3. Compound Components (composition pattern)**:** For complex components, expose a composable API rather than a monolithic prop surface
 
 ```jsx
@@ -466,25 +465,25 @@ export const tokens = {
 </details>
 
 <details>
-<summary>What is `react-helmet`?</summary>
+<summary>What is <code>react-helmet</code>?</summary>
 
 React Helmet is a library that lets you **manage the `<head>` of your HTML document** from within your React components, things like `<title>`, `<meta>` tags, `<link>` tags, and `<script>` tags.
 
 </details>
 
 <details>
-<summary>What is the different between `controlled` and `uncontrolled elements`?</summary>
+<summary>What is the different between <code>controlled</code> and <code>uncontrolled elements</code>?</summary>
 
 - Controlled — React owns the state, The input's value is driven entirely by React state. Every keystroke goes through React
 
 ```jsx
 function ControlledForm() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
 
   return (
     <input
-      value={name}                          // React controls the value
-      onChange={e => setName(e.target.value)} // React updates on change
+      value={name} // React controls the value
+      onChange={(e) => setName(e.target.value)} // React updates on change
     />
   );
 }

@@ -5,15 +5,15 @@
 
 Hoisting is a JavaScript mechanism where variable and function declarations are moved ("hoisted") to the top of their containing scope during the compile phase.
 
-| Declaration | Accessing before declaration |
-| --- | --- |
-| `var foo` | `undefined` |
-| `let foo` | `ReferenceError` |
-| `const foo` | `ReferenceError` |
-| `class Foo` | `ReferenceError` |
-| `var foo = function() { ... }` | `undefined` |
-| `function foo() { ... }` | Normal |
-| `import` | Normal |
+| Declaration                    | Accessing before declaration |
+| ------------------------------ | ---------------------------- |
+| `var foo`                      | `undefined`                  |
+| `let foo`                      | `ReferenceError`             |
+| `const foo`                    | `ReferenceError`             |
+| `class Foo`                    | `ReferenceError`             |
+| `var foo = function() { ... }` | `undefined`                  |
+| `function foo() { ... }`       | Normal                       |
+| `import`                       | Normal                       |
 
 Hoisting is a JavaScript mechanism where variable and function declarations are moved ("hoisted") to the top of their containing scope during the compile phase.
 
@@ -25,7 +25,7 @@ console.log(foo); // 1
 
 ```jsx
 for (var i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 0);
+  setTimeout(() => console.log(i), 0);
 }
 
 // 3
@@ -36,41 +36,41 @@ for (var i = 0; i < 3; i++) {
 </details>
 
 <details>
-<summary>What are the differences between variables created using `let`, `var` or `const`?</summary>
+<summary>What are the differences between variables created using <code>let</code>, <code>var</code> or <code>const</code>?</summary>
 
-| Behavior | `var` | `let` | `const` |
-| --- | --- | --- | --- |
-| Scope | Function or Global | Block | Block |
-| Initialization | Optional | Optional | Required |
-| Redeclaration | Yes | No | No |
-| Reassignment | Yes | Yes | No |
-| Accessing before declaration | `undefined` | `ReferenceError` | `ReferenceError` |
+| Behavior                     | `var`              | `let`            | `const`          |
+| ---------------------------- | ------------------ | ---------------- | ---------------- |
+| Scope                        | Function or Global | Block            | Block            |
+| Initialization               | Optional           | Optional         | Required         |
+| Redeclaration                | Yes                | No               | No               |
+| Reassignment                 | Yes                | Yes              | No               |
+| Accessing before declaration | `undefined`        | `ReferenceError` | `ReferenceError` |
 
 </details>
 
 <details>
-<summary>What is the difference between `==` and `===` in JavaScript?</summary>
+<summary>What is the difference between <code>==</code> and <code>===</code> in JavaScript?</summary>
 
 **`==`** is the abstract equality operator while **`===`** is the strict equality operator.
 
 - **Equality operator (`==`)**
 
 ```jsx
-console.log(42 == '42'); // true
+console.log(42 == "42"); // true
 console.log(0 == false); // true
 console.log(null == undefined); // true
 console.log([] == false); // true
-console.log('' == false); // true
+console.log("" == false); // true
 ```
 
 - **Strict equality operator (`===`)**
 
 ```jsx
-console.log(42 === '42'); // false
+console.log(42 === "42"); // false
 console.log(0 === false); // false
 console.log(null === undefined); // false
 console.log([] === false); // false
-console.log('' === false); // false
+console.log("" === false); // false
 
 console.log([] === []); // flase
 console.log({} === {}); // false
@@ -90,24 +90,24 @@ The algorithm per tick:
 4. Repeat
 
 ```jsx
-console.log('1');
+console.log("1");
 
-setTimeout(() => console.log('2'), 0);
+setTimeout(() => console.log("2"), 0);
 
-Promise.resolve().then(() => console.log('3'));
+Promise.resolve().then(() => console.log("3"));
 
-console.log('4');
+console.log("4");
 
 // Output: 1, 4, 3, 2
 ```
 
 ```jsx
 Promise.resolve().then(() => {
-  console.log('A');
-  Promise.resolve().then(() => console.log('B'));
+  console.log("A");
+  Promise.resolve().then(() => console.log("B"));
 });
 
-Promise.resolve().then(() => console.log('C'));
+Promise.resolve().then(() => console.log("C"));
 
 // Output: A, C, B
 ```
@@ -127,10 +127,10 @@ Event delegation is a technique in JavaScript where a single event listener is a
 //   <li>Item 3</li>
 // </ul>
 
-const itemList = document.getElementById('item-list');
+const itemList = document.getElementById("item-list");
 
-itemList.addEventListener('click', (event) => {
-  if (event.target.tagName === 'LI') {
+itemList.addEventListener("click", (event) => {
+  if (event.target.tagName === "LI") {
     console.log(`Clicked on ${event.target.textContent}`);
   }
 });
@@ -143,7 +143,7 @@ itemList.addEventListener('click', (event) => {
 </details>
 
 <details>
-<summary>Explain how `this` works in JavaScript</summary>
+<summary>Explain how <code>this</code> works in JavaScript</summary>
 
 **`this`** is a keyword that refers to the current execution context of a function or script.
 
@@ -156,7 +156,7 @@ itemList.addEventListener('click', (event) => {
 
 ```javascript
 const obj = {
-  name: 'John',
+  name: "John",
   showThis: function () {
     console.log(this);
   },
@@ -173,7 +173,7 @@ function Person(name) {
   this.name = name;
 }
 
-const person = new Person('John');
+const person = new Person("John");
 console.log(person.name); // "John"
 ```
 
@@ -191,7 +191,7 @@ class Person {
   }
 }
 
-const person = new Person('John');
+const person = new Person("John");
 person.showThis(); // Person {name: 'John'}
 
 const showThisStandalone = person.showThis;
@@ -201,22 +201,22 @@ showThisStandalone(); // `undefined` because in JavaScript class bodies, all met
 </details>
 
 <details>
-<summary>Describe the difference between a `cookie`, `sessionStorage` and `localStorage`</summary>
+<summary>Describe the difference between a <code>cookie</code>, <code>sessionStorage</code> and <code>localStorage</code></summary>
 
-| Property | Cookie | `localStorage` | `sessionStorage` |
-| --- | --- | --- | --- |
-| Initiator | Client or server. Server can use `Set-Cookie` header | Client | Client |
-| Lifespan | As specified | Until deleted | Until tab is closed |
-| Persistent across browser sessions | If a future expiry date is set | Yes | No |
-| Sent to server with every HTTP request | Yes, sent via `Cookie` header | No | No |
-| Total capacity (per domain) | 4kb | 5MB | 5MB |
-| Access | Across windows/tabs | Across windows/tabs | Same tab |
-| Security | JavaScript cannot access `HttpOnly` cookies | None | None |
+| Property                               | Cookie                                               | `localStorage`      | `sessionStorage`    |
+| -------------------------------------- | ---------------------------------------------------- | ------------------- | ------------------- |
+| Initiator                              | Client or server. Server can use `Set-Cookie` header | Client              | Client              |
+| Lifespan                               | As specified                                         | Until deleted       | Until tab is closed |
+| Persistent across browser sessions     | If a future expiry date is set                       | Yes                 | No                  |
+| Sent to server with every HTTP request | Yes, sent via `Cookie` header                        | No                  | No                  |
+| Total capacity (per domain)            | 4kb                                                  | 5MB                 | 5MB                 |
+| Access                                 | Across windows/tabs                                  | Across windows/tabs | Same tab            |
+| Security                               | JavaScript cannot access `HttpOnly` cookies          | None                | None                |
 
 </details>
 
 <details>
-<summary>Describe the difference between `<script>`, `<script async>` and `<script defer>`</summary>
+<summary>Describe the difference between <code>script</code>, <code>script async</code> and <code>script defer</code></summary>
 
 - **`<script>`**
   For normal **`<script>`** tags without any **`async`** or **`defer`**, when they are encountered, HTML parsing is blocked, the script is fetched and executed immediately. HTML parsing resumes after the script is executed. This can block rendering of the page if the script is large.
@@ -228,18 +228,18 @@ showThisStandalone(); // `undefined` because in JavaScript class bodies, all met
 </details>
 
 <details>
-<summary>What's the difference between: `null`, `undefined` or undeclared?</summary>
+<summary>What's the difference between: <code>null</code>, <code>undefined</code> or undeclared?</summary>
 
-| Trait | `null` | `undefined` | Undeclared |
-| --- | --- | --- | --- |
-| Meaning | Explicitly set by the developer to indicate that a variable has no value | Variable has been declared but not assigned a value | Variable has not been declared at all |
-| Type (via `typeof` operator) | `'object'` | `'undefined'` | `'undefined'` |
-| Equality Comparison | `null == undefined` is `true` | `undefined == null` is `true` | Throws a `ReferenceError` |
+| Trait                        | `null`                                                                   | `undefined`                                         | Undeclared                            |
+| ---------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------- | ------------------------------------- |
+| Meaning                      | Explicitly set by the developer to indicate that a variable has no value | Variable has been declared but not assigned a value | Variable has not been declared at all |
+| Type (via `typeof` operator) | `'object'`                                                               | `'undefined'`                                       | `'undefined'`                         |
+| Equality Comparison          | `null == undefined` is `true`                                            | `undefined == null` is `true`                       | Throws a `ReferenceError`             |
 
 </details>
 
 <details>
-<summary>What's the difference between `.call` and `.apply` in JavaScript?</summary>
+<summary>What's the difference between <code>.call</code> and <code>.apply</code> in JavaScript?</summary>
 
 **`.call`** and **`.apply`** are both used to invoke functions with a specific **`this`** context and arguments. The primary difference lies in how they accept arguments:
 
@@ -264,7 +264,7 @@ A closure is a function that retains access to these variables even after the ou
 
 ```jsx
 function outerFunction() {
-  const outerVar = 'I am outside of innerFunction';
+  const outerVar = "I am outside of innerFunction";
 
   function innerFunction() {
     console.log(outerVar); // `innerFunction` can still access `outerVar`.
@@ -283,26 +283,26 @@ inner(); // "I am outside of innerFunction"
 </details>
 
 <details>
-<summary>What is the difference between a `Map` object and a `plain object` in JavaScript?</summary>
+<summary>What is the difference between a <code>Map</code> object and a <code>plain object</code> in JavaScript?</summary>
 
 Both `Map` objects and plain objects in JavaScript can store key-value pairs, but they have several key differences:
 
-| Feature | `Map` | Plain object |
-| --- | --- | --- |
-| Key type | Any data type | String (or Symbol) |
-| Key order | Maintained | Not guaranteed |
-| Size property | Yes (`size`) | None |
-| Iteration | `forEach`, `keys()`, `values()`, `entries()` | `for...in`, `Object.keys()`, etc. |
-| Inheritance | No | Yes |
-| Performance | Generally better for larger datasets and frequent additions/deletions | Faster for small datasets and simple operations |
-| Serializable | No | Yes |
+| Feature       | `Map`                                                                 | Plain object                                    |
+| ------------- | --------------------------------------------------------------------- | ----------------------------------------------- |
+| Key type      | Any data type                                                         | String (or Symbol)                              |
+| Key order     | Maintained                                                            | Not guaranteed                                  |
+| Size property | Yes (`size`)                                                          | None                                            |
+| Iteration     | `forEach`, `keys()`, `values()`, `entries()`                          | `for...in`, `Object.keys()`, etc.               |
+| Inheritance   | No                                                                    | Yes                                             |
+| Performance   | Generally better for larger datasets and frequent additions/deletions | Faster for small datasets and simple operations |
+| Serializable  | No                                                                    | Yes                                             |
 
 </details>
 
 <details>
 <summary>Explain how prototypal inheritance works in JavaScript</summary>
 
-Prototypical inheritance in JavaScript is a way for objects to inherit properties and methods from other objects. Every JavaScript object has a special hidden property called **`[[Prototype]]`** (commonly accessed via **`__proto__`** or using  **`Object.getPrototypeOf()`**) that is a reference to another object, which is called the object's "prototype".
+Prototypical inheritance in JavaScript is a way for objects to inherit properties and methods from other objects. Every JavaScript object has a special hidden property called **`[[Prototype]]`** (commonly accessed via **`__proto__`** or using **`Object.getPrototypeOf()`**) that is a reference to another object, which is called the object's "prototype".
 
 ```jsx
 // Parent object constructor.
@@ -312,7 +312,7 @@ function Animal(name) {
 
 // Add a method to the parent object's prototype.
 Animal.prototype.makeSound = function () {
-  console.log('The ' + this.constructor.name + ' makes a sound.');
+  console.log("The " + this.constructor.name + " makes a sound.");
 };
 
 // Child object constructor.
@@ -325,11 +325,11 @@ Object.setPrototypeOf(Dog.prototype, Animal.prototype);
 
 // Add a method to the child object's prototype.
 Dog.prototype.bark = function () {
-  console.log('Woof!');
+  console.log("Woof!");
 };
 
 // Create a new instance of Dog.
-const bolt = new Dog('Bolt');
+const bolt = new Dog("Bolt");
 
 // Call methods on the child object.
 console.log(bolt.name); // "Bolt"
@@ -340,7 +340,7 @@ bolt.bark(); // "Woof!"
 </details>
 
 <details>
-<summary>What is the difference between `__proto__` vs `prototype`?</summary>
+<summary>What is the difference between <code>__proto__</code> vs <code>prototype</code>?</summary>
 
 - **`prototype`** is a property that exists on **functions** (specifically constructor functions and classes). It's the object that will become the `__proto__` of any instance created with `new`.
 - **`__proto__`** is a property that exists on **every object**. It points to the object's actual prototype in the prototype chain — i.e., the object it inherits from.
@@ -350,14 +350,14 @@ function Dog(name) {
   this.name = name;
 }
 
-Dog.prototype.bark = function() {
-  return 'Woof!';
+Dog.prototype.bark = function () {
+  return "Woof!";
 };
 
-const rex = new Dog('Rex');
+const rex = new Dog("Rex");
 
 // These are the same object:
-rex.__proto__ === Dog.prototype  // true
+rex.__proto__ === Dog.prototype; // true
 ```
 
 So in short
@@ -371,37 +371,37 @@ So in short
 
 - **Mutable objects** can be changed after creation. Most JavaScript objects, arrays, and Maps fall into this category
 - **Immutable values** cannot be changed. All primitives (strings, numbers, booleans) are immutable — any "change" produces a new value:
-- React decides whether to re-render by doing a **shallow comparison** (===) on state and props. It checks *references*, not deep equality.
+- React decides whether to re-render by doing a **shallow comparison** (===) on state and props. It checks _references_, not deep equality.
 
 ```jsx
 // BAD — same reference, React won't re-render
 const handleClick = () => {
-  items.push('new item');
+  items.push("new item");
   setItems(items); // same reference! React sees no change
 };
 
 // GOOD — new reference, React detects the change
 const handleClick = () => {
-  setItems([...items, 'new item']); // new array
+  setItems([...items, "new item"]); // new array
 };
 ```
 
 </details>
 
 <details>
-<summary>Deep copy of `objects` inside `array`</summary>
+<summary>Deep copy of <code>objects</code> inside <code>array</code></summary>
 
 - The Core Concept: Shallow vs Deep Copy
 
 ```jsx
 const users = [
-  { name: 'Ali', address: { city: 'Istanbul' } },
-  { name: 'Veli', address: { city: 'Ankara' } },
+  { name: "Ali", address: { city: "Istanbul" } },
+  { name: "Veli", address: { city: "Ankara" } },
 ];
 
 // SHALLOW copy — nested objects still share references
 const copy = [...users];
-copy[0].address.city = 'Izmir';
+copy[0].address.city = "Izmir";
 console.log(users[0].address.city); // 'Izmir' — original mutated!
 ```
 
@@ -409,7 +409,7 @@ console.log(users[0].address.city); // 'Izmir' — original mutated!
 
 ```jsx
 const deepCopy = structuredClone(users);
-deepCopy[0].address.city = 'Izmir';
+deepCopy[0].address.city = "Izmir";
 console.log(users[0].address.city); // 'Istanbul' — safe
 ```
 
@@ -422,7 +422,7 @@ const deepCopy = JSON.parse(JSON.stringify(users));
 </details>
 
 <details>
-<summary>What are the pros and cons of using `Promises` instead of `callbacks` in JavaScript?</summary>
+<summary>What are the pros and cons of using <code>Promises</code> instead of <code>callbacks</code> in JavaScript?</summary>
 
 Promises offer a cleaner alternative to callbacks, helping to avoid callback hell and making asynchronous code more readable.
 
@@ -431,23 +431,22 @@ Promises offer a cleaner alternative to callbacks, helping to avoid callback hel
 ```jsx
 function getFirstData(callback) {
   setTimeout(() => {
-    callback({ id: 1, title: 'First Data' });
+    callback({ id: 1, title: "First Data" });
   }, 1000);
 }
 
 function getSecondData(data, callback) {
   setTimeout(() => {
-    callback({ id: data.id, title: data.title + ' Second Data' });
+    callback({ id: data.id, title: data.title + " Second Data" });
   }, 1000);
 }
 
 // Callback hell
 getFirstData((data) => {
   getSecondData(data, (data) => {
-  console.log(result); // Output: {id: 1, title: "First Data Second Data Third Data"}
+    console.log(result); // Output: {id: 1, title: "First Data Second Data Third Data"}
   });
 });
-
 ```
 
 - Makes it easy to write sequential asynchronous code that is readable with `.then()`.
@@ -457,17 +456,17 @@ getFirstData((data) => {
 </details>
 
 <details>
-<summary>Promises - creation, chaining, error handling `Promise.all/race/allSettled`</summary>
+<summary>Promises - creation, chaining, error handling <code>Promise.all/race/allSettled</code></summary>
 
 1. Promise Creation
-    - A Promise wraps an async operation. It's in one of three states: **pending**, **fulfilled**, or **rejected**. Once settled, it can't change.
+   - A Promise wraps an async operation. It's in one of three states: **pending**, **fulfilled**, or **rejected**. Once settled, it can't change.
 
 ```jsx
 const fetchUser = (id) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (id > 0) resolve({ id, name: 'Ali' });
-      else reject(new Error('Invalid ID'));
+      if (id > 0) resolve({ id, name: "Ali" });
+      else reject(new Error("Invalid ID"));
     }, 1000);
   });
 };
@@ -476,32 +475,32 @@ const fetchUser = (id) => {
 - Key point: the executor function runs **synchronously** — only the callbacks are deferred. This is a common trick question.
 
 ```jsx
-console.log('A');
-new Promise(() => console.log('B')); // runs immediately
-console.log('C');
+console.log("A");
+new Promise(() => console.log("B")); // runs immediately
+console.log("C");
 // Output: A, B, C
 
-console.log('1');
-Promise.resolve().then(() => console.log('2'));
-console.log('3');
+console.log("1");
+Promise.resolve().then(() => console.log("2"));
+console.log("3");
 // Output: 1, 3, 2
 // .then() callbacks go to the microtask queue
 ```
 
 1. **Chaining**
-    - Each `.then()` returns a **new Promise**, which is what makes chaining work:
+   - Each `.then()` returns a **new Promise**, which is what makes chaining work:
 
 ```jsx
 fetchUser(1)
-  .then(user => {
-    console.log(user.name);   // 'Ali'
+  .then((user) => {
+    console.log(user.name); // 'Ali'
     return fetchPosts(user.id); // return a promise
   })
-  .then(posts => {
+  .then((posts) => {
     console.log(posts.length);
-    return posts[0];            // return a plain value
+    return posts[0]; // return a plain value
   })
-  .then(firstPost => {
+  .then((firstPost) => {
     console.log(firstPost.title);
   });
 ```
@@ -523,21 +522,21 @@ Errors propagate down the chain until something catches them, like a try/catch:
 
 ```jsx
 fetchUser(-1)
-  .then(user => fetchPosts(user.id))
-  .then(posts => console.log(posts))
-  .catch(err => {
+  .then((user) => fetchPosts(user.id))
+  .then((posts) => console.log(posts))
+  .catch((err) => {
     // catches error from ANY step above
-    console.error('Something failed:', err.message);
+    console.error("Something failed:", err.message);
   })
   .finally(() => {
     // runs regardless — great for cleanup
-    console.log('Loading done');
+    console.log("Loading done");
   });
 ```
 
 1. **Static Methods — `Promise.all / race / allSettled / any`**
-    - **`Promise.all`** — all must succeed, fails fast on first rejection
-    Use case: parallel fetches where you need all results.
+   - **`Promise.all`** — all must succeed, fails fast on first rejection
+     Use case: parallel fetches where you need all results.
 
 ```jsx
 const [user, posts, comments] = await Promise.all([
@@ -549,7 +548,7 @@ const [user, posts, comments] = await Promise.all([
 ```
 
 - **`Promise.race`** — first to settle wins (fulfilled OR rejected)
-Use case: timeout patterns, performance racing.
+  Use case: timeout patterns, performance racing.
 
 ```jsx
 const result = await Promise.race([
@@ -560,12 +559,12 @@ const result = await Promise.race([
 ```
 
 - **`Promise.allSettled`** — waits for ALL, never short-circuits
-Use case: batch operations where partial failure is acceptable (sending emails, uploading files).
+  Use case: batch operations where partial failure is acceptable (sending emails, uploading files).
 
 ```jsx
 const results = await Promise.allSettled([
   fetchUser(1),
-  fetchUser(-1),  // this will reject
+  fetchUser(-1), // this will reject
   fetchUser(2),
 ]);
 
@@ -591,13 +590,13 @@ const fastest = await Promise.any([
 </details>
 
 <details>
-<summary>`setTimeout` vs `setInterval` — Behavior, Drift, Cleanup</summary>
+<summary><code>setTimeout</code> vs <code>setInterval</code> — Behavior, Drift, Cleanup</summary>
 
 - **`setTimeout`** — runs once after a delay:
 
 ```jsx
 const id = setTimeout(() => {
-  console.log('runs once');
+  console.log("runs once");
 }, 1000);
 
 clearTimeout(id); // cancel it
@@ -607,7 +606,7 @@ clearTimeout(id); // cancel it
 
 ```jsx
 const id = setInterval(() => {
-  console.log('runs every second');
+  console.log("runs every second");
 }, 1000);
 
 clearInterval(id); // must clean up!
@@ -630,7 +629,7 @@ clearInterval(id); // must clean up!
 ```jsx
 useEffect(() => {
   const id = setInterval(() => {
-    setCount(c => c + 1);
+    setCount((c) => c + 1);
   }, 1000);
 
   return () => clearInterval(id); // cleanup on unmount
