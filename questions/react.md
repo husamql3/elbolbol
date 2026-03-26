@@ -100,7 +100,7 @@ Both are React hooks for **memoization,** they cache a value to avoid expensive 
 - **Handling errors:** It's important to handle errors that may occur during data fetching. You can use a **`try-catch`** block within the **`useEffect`** to catch and handle errors.
 - **Using custom hooks:** For better code reusability, you can create custom hooks to handle data fetching. This allows you to encapsulate the data fetching logic and reuse it across multiple components.
 
-```jsx
+```javascript
 function useFetch(url) {
   // fetching
   return { data, loading, error };
@@ -143,7 +143,7 @@ function useFetch(url) {
 
 - `useEffect` — after paint (async)
 
-```jsx
+```javascript
 useEffect(() => {
   fetchData(); // runs after user sees the new UI
 }, [id]);
@@ -151,7 +151,7 @@ useEffect(() => {
 
 - `useLayoutEffect` — before paint (synchronous)
 
-```jsx
+```javascript
 useLayoutEffect(() => {
   const height = ref.current.getBoundingClientRect().height;
   setTooltipPosition(height); // runs before user sees anything
@@ -257,7 +257,7 @@ functions in React that take a component as an argument and return a new compone
 - **How to Fix Mismatches**
   1. **Delay browser-only code with `useEffect`**
 
-```jsx
+```javascript
 useEffect(() => {
   setWidth(window.innerWidth); // runs only on client
 }, []);
@@ -265,14 +265,14 @@ useEffect(() => {
 
 2. `suppressHydrationWarning` for intentional differences
 
-```jsx
+```javascript
 // For timestamps or truly unavoidable differences
 <time suppressHydrationWarning>{new Date().toLocaleString()}</time>
 ```
 
 3. Mount guard pattern
 
-```jsx
+```javascript
 const [mounted, setMounted] = useState(false);
 
 useEffect(() => setMounted(true), []);
@@ -352,7 +352,7 @@ Is content personalized per user?
 - `useRef` - two distinct use cases, The key insight: **`useRef` returns the same object every render.** Mutating `.current` doesn't cause a re-render — unlike `useState`.
   - Use case 1: DOM access
 
-```jsx
+```javascript
 function TextInput() {
   const inputRef = useRef(null);
 
@@ -371,7 +371,7 @@ function TextInput() {
 
 - Use case 2: Persisting values across renders without triggering re-render
 
-```jsx
+```javascript
 function Timer() {
   const intervalRef = useRef(null);
 
@@ -422,7 +422,7 @@ function Timer() {
 
 1. Design Tokens (the foundation): Tokens are the single source of truth for all visual decisions. Everything else derives from them.
 
-```jsx
+```javascript
 // tokens.js — platform-agnostic, can generate CSS, iOS, Android
 export const tokens = {
   color: {
@@ -436,7 +436,7 @@ export const tokens = {
    **The key rule:** primitives should be flexible enough that teams **never need to fork them**. Every reasonable variant should be a prop.
 3. Compound Components (composition pattern)**:** For complex components, expose a composable API rather than a monolithic prop surface
 
-```jsx
+```javascript
 // ❌ Monolithic — props explosion, hard to extend
 <Card
   title="Hello"
@@ -476,7 +476,7 @@ React Helmet is a library that lets you **manage the `<head>` of your HTML docum
 
 - Controlled — React owns the state, The input's value is driven entirely by React state. Every keystroke goes through React
 
-```jsx
+```javascript
 function ControlledForm() {
   const [name, setName] = useState("");
 
@@ -492,7 +492,7 @@ function ControlledForm() {
 
 - Uncontrolled — the DOM owns the state, You let the browser manage the input naturally, and read the value when you need it via a `ref`.
 
-```jsx
+```javascript
 function UncontrolledForm() {
   const inputRef = useRef(null);
 
@@ -513,3 +513,107 @@ function UncontrolledForm() {
 ```
 
 </details>
+
+<details>
+<summary>What are error boundaries in React for?</summary>
+
+Error boundaries are a feature in React that help manage and handle errors in a more graceful way. They allow developers to catch JavaScript errors anywhere in their component tree, log those errors, and display a fallback UI instead of crashing the entire application.
+
+To create an error boundary, you need to define a class component that implements either or both of the following lifecycle methods:
+
+- `static getDerivedStateFromError(error)`: This method is used to update the state so the next render will show the fallback UI.
+- `componentDidCatch(error, info)`: This method is used to log error information.
+
+```javascript
+// implementation
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render shows the fallback UI
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    console.error('Error caught by ErrorBoundary: ', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
+
+
+// Usage
+<ErrorBoundary>
+  <MyComponent />
+</ErrorBoundary>
+```
+
+</details>
+
+<details>
+<summary>What is React Suspense and what does it enable?</summary>
+
+React Suspense is a feature introduced by the React team to help manage asynchronous operations in a more declarative way. It allows you to specify a loading state (fallback) while waiting for some asynchronous operation to complete, such as data fetching or code splitting.
+
+- Code splitting with React.lazy
+
+One of the primary use cases for React Suspense is code splitting. Code splitting allows you to load parts of your application on demand, which can significantly improve the initial load time of your application.
+
+```javascript
+import React, { Suspense } from 'react';
+
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+
+function MyComponent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyComponent />
+    </Suspense>
+  );
+}
+```
+
+- Data fetching with Suspense
+
+React Suspense can also be used for data fetching, it's not experimental anymore
+
+```javascript
+import React, { Suspense } from 'react';
+import { useQuery } from 'react-query';
+
+function fetchData() {
+  return fetch('https://api.example.com/data').then((response) =>
+    response.json(),
+  );
+}
+
+function DataComponent() {
+  const { data } = useQuery('data', fetchData);
+  return <div>{data}</div>;
+}
+
+function MyComponent() {
+  return (
+    <Suspense fallback={<div>Loading data...</div>}>
+      <DataComponent />
+    </Suspense>
+  );
+}
+```
+
+</details>
+
+
