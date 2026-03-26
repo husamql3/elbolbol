@@ -594,18 +594,16 @@ export default ErrorBoundary;
 <details>
 <summary>What is React Suspense and what does it enable?</summary>
 
-React Suspense is a feature introduced by the React team to help manage asynchronous operations in a more declarative way. It allows you to specify a loading state (fallback) while waiting for some asynchronous operation to complete, such as data fetching or code splitting.
+Suspense lets a component "suspend" rendering while waiting for something async (data, code, etc.). React **unmounts** the children and shows the `fallback` until the async work resolves.
 
-- Code splitting with React.lazy
+- **How it works under the hood:** a component throws a Promise → React catches it at the nearest `<Suspense>` boundary → shows fallback → re-renders when the promise resolves.
 
-One of the primary use cases for React Suspense is code splitting. Code splitting allows you to load parts of your application on demand, which can significantly improve the initial load time of your application.
+- **Code splitting with `React.lazy`**
 
 ```javascript
-import React, { Suspense } from "react";
-
 const LazyComponent = React.lazy(() => import("./LazyComponent"));
 
-function MyComponent() {
+function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LazyComponent />
@@ -614,32 +612,62 @@ function MyComponent() {
 }
 ```
 
-- Data fetching with Suspense
+- **Data fetching — `useSuspenseQuery` vs `useQuery`**
 
-React Suspense can also be used for data fetching, it's not experimental anymore
+  | | `useQuery` | `useSuspenseQuery` |
+  |---|---|---|
+  | Returns | `{ data, isLoading, error }` | `{ data }` — always defined |
+  | Loading state | You handle it manually | Delegates to `<Suspense>` boundary |
+  | Error state | You handle it manually | Delegates to error boundary |
+  | Suspense compatible | No (doesn't throw a promise) | Yes (throws a promise) |
 
 ```javascript
-import React, { Suspense } from "react";
-import { useQuery } from "react-query";
-
-function fetchData() {
-  return fetch("https://api.example.com/data").then((response) =>
-    response.json(),
-  );
-}
-
+// useQuery — manual loading/error handling
 function DataComponent() {
-  const { data } = useQuery("data", fetchData);
-  return <div>{data}</div>;
+  const { data, isLoading, error } = useQuery({ queryKey: ["data"], queryFn: fetchData });
+
+  if (isLoading) return <Spinner />;
+  if (error) return <Error />;
+  return <div>{data.name}</div>;
 }
 
-function MyComponent() {
+// useSuspenseQuery — Suspense handles loading, error boundary handles errors
+function DataComponent() {
+  const { data } = useSuspenseQuery({ queryKey: ["data"], queryFn: fetchData });
+  return <div>{data.name}</div>; // data is always defined here
+}
+
+// wrap it
+<ErrorBoundary fallback={<Error />}>
+  <Suspense fallback={<Spinner />}>
+    <DataComponent />
+  </Suspense>
+</ErrorBoundary>
+```
+
+- **Suspense shows fallback, NOT an overlay**
+  Suspense **unmounts** children and replaces them with the fallback — you can't show a loading overlay on top of stale content with Suspense alone. For that, use `useTransition`:
+
+```javascript
+function SearchResults({ query }) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleSearch(newQuery) {
+    startTransition(() => {
+      setQuery(newQuery); // marks this update as non-urgent
+    });
+  }
+
   return (
-    <Suspense fallback={<div>Loading data...</div>}>
-      <DataComponent />
-    </Suspense>
+    <div style={{ opacity: isPending ? 0.5 : 1 }}> {/* overlay effect */}
+      <Results query={query} />
+    </div>
   );
 }
+// isPending = true while React renders the new tree in the background
+// Old UI stays visible (dimmed), no unmount, no fallback
 ```
+
+- **Streaming SSR** — Suspense boundaries also define streaming chunks in Next.js. Server sends HTML for resolved parts immediately, suspended parts stream in as they resolve.
 
 </details>
