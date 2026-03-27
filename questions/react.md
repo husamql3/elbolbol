@@ -189,6 +189,35 @@ The `useRef` hook creates a mutable object that persists across renders without 
 </details>
 
 <details>
+<summary>What is <code>useId</code> and why not just hardcode an ID?</summary>
+
+`useId` generates a unique, stable ID per component instance. It's used for linking HTML elements that need matching IDs (e.g. `aria-describedby`, `htmlFor`).
+
+- **Why not hardcode?** If a component is rendered multiple times, you'd have duplicate IDs — broken HTML, broken accessibility.
+- **Why not `Math.random()`?** It produces different values on server vs client, causing hydration mismatches.
+- `useId` is **SSR-safe** — it generates the same ID on server and client.
+
+```jsx
+function PasswordField() {
+  const hintId = useId();
+  return (
+    <>
+      <input type="password" aria-describedby={hintId} />
+      <p id={hintId}>Must be at least 18 characters</p>
+    </>
+  );
+}
+
+// Render it twice — each gets its own unique ID
+<PasswordField />  {/* hintId = ":r1:" */}
+<PasswordField />  {/* hintId = ":r2:" */}
+```
+
+- `aria-describedby` tells screen readers: "when the user focuses this input, also read the element with this ID." So a blind user hears the hint text alongside the input label.
+
+</details>
+
+<details>
 <summary>What are higher order components (HOC) in React?</summary>
 
 functions in React that take a component as an argument and return a new component. The new component typically wraps the original component and adds additional props, state, or behavior. HOCs are a pattern for reusing component logic.
