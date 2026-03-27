@@ -54,16 +54,66 @@ Why `key` is important **→** Efficient updates, Avoiding bugs, and Performance
 <details>
 <summary>What does re-rendering mean in React?</summary>
 
-- **Understanding re-rendering:** Re-rendering in React is the process by which a component updates its output to the DOM in response to changes in its state or props. This ensures that the UI is always in sync with the underlying data.
-- Re-rendering occurs in the following scenarios:
-  - When a component's state changes using **`setState`**
-  - When a component receives new props from its parent component
-  - When the parent component re-renders, causing its child components to re-render as well
-- **The re-rendering process**
-  1. **State or props change**: When a component's state or props change, React schedules a re-render for that component.
-  2. **Render method**: React calls the component's **`render`** method to generate a new virtual DOM tree.
-  3. **Virtual DOM comparison**: React compares the new virtual DOM tree with the previous one using a diffing algorithm.
-  4. **DOM updates**: React calculates the minimal set of changes required and updates the actual DOM accordingly.
+- **The one rule:** Every re-render starts with a **state change**. That's the only trigger. Re-renders cascade **downward** from the component that owns the state — not sideways or upward.
+
+- **Common misconception — "props cause re-renders":**
+  Props are a **symptom**, not the cause. When a parent re-renders, all its children re-render **regardless of whether their props changed**. React can't reliably predict which descendants depend on the changed data, so it re-renders them all to stay safe.
+
+- **The re-rendering process:**
+  1. State changes → React schedules a re-render for that component
+  2. React calls the component function again → generates a new virtual DOM tree
+  3. Diffing → React compares new vs previous virtual DOM
+  4. Commit → React updates only the parts of the real DOM that changed
+
+- **Why new references matter:**
+  Every re-render calls the component function again, so every object/array/function inside it is a **new reference** in memory — even if the values are identical. React compares by reference (`===`), not by value.
+
+- **Opting out of re-renders — `React.memo`:**
+  Wraps a component to skip re-render if props haven't changed (shallow `===` comparison).
+
+  | Scenario | Re-renders? |
+  |---|---|
+  | No `memo` | Always when parent re-renders |
+  | `memo` + primitive props | Skips if values are the same |
+  | `memo` + object/function props | Still re-renders (new reference every render) |
+  | `memo` + `useMemo`/`useCallback` on props | Skips (stable references) |
+  | `memo` + custom comparator | Your logic decides |
+
+```javascript
+const MyComponent = React.memo(
+  ({ user, onClick }) => { /* ... */ },
+  (prevProps, nextProps) => {
+    // return true = skip re-render, false = re-render
+    return prevProps.user.id === nextProps.user.id;
+  }
+);
+```
+
+- **`useCallback` and stale closures:**
+  `useCallback` caches a function reference, but the function closes over values from the render it was created in. The deps array controls when to create a fresh closure:
+
+```javascript
+// BUG — empty deps, count is always 0 (stale closure)
+const handleClick = useCallback(() => {
+  console.log(count);
+}, []);
+
+// FIX 1 — add dependency (new function when count changes)
+const handleClick = useCallback(() => {
+  console.log(count);
+}, [count]);
+
+// FIX 2 — setter form, no dependency needed
+const increment = useCallback(() => {
+  setCount(prev => prev + 1);
+}, []);
+```
+
+- **React Compiler (React 19):**
+  The React Compiler (previously React Forget) auto-inserts memoization at build time. It analyzes your code and adds `useMemo`/`useCallback`/`React.memo` equivalents automatically — making manual optimization unnecessary for most cases.
+
+- **Strict Mode double rendering:**
+  In development, React Strict Mode intentionally double-invokes component functions, `useState` initializers, and `useEffect` setup + cleanup. This helps catch impure components and missing cleanup. **Only happens in dev, stripped in production.** Next.js enables `reactStrictMode: true` by default.
 
 </details>
 
