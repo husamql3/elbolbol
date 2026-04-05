@@ -133,3 +133,34 @@ never use with user input
 ```
 
 </details>
+
+<details>
+<summary>SSR vs CSR in terms of Web Vitals</summary>
+
+**SSR (Server-Side Rendering)** sends fully formed HTML from the server, giving superior initial load metrics. **CSR (Client-Side Rendering)** sends a minimal HTML shell and renders everything via JavaScript in the browser, excelling at post-load interactivity.
+
+### Key Differences in Web Vitals
+
+| Metric | SSR | CSR |
+|--------|-----|-----|
+| **FCP** | Very fast — browser receives ready-to-render HTML | Slow — must download and execute JS before painting |
+| **LCP** | Generally faster — main content rendered on the server | Dependent on network speed and JS bundle size |
+| **INP** | Slight delay during hydration, but generally fast | Excellent for subsequent interactions — app is already loaded |
+| **CLS** | Good if images/elements have specified sizes — content arrives complete | Can be high if content pops in dynamically after JS execution |
+
+### When to Choose
+
+- **SSR** — Content-heavy sites, blogs, e-commerce, or when SEO is a priority
+- **CSR** — Highly interactive SPAs or private dashboards where SEO doesn't matter
+
+### Hybrid Approach
+
+Modern frameworks (Next.js, Nuxt) combine both: SSR for the initial load and CSR for subsequent interactivity.
+
+```text
+First request → Server renders full HTML (fast FCP/LCP)
+Hydration      → JS attaches to make page interactive
+Navigation     → Client-side routing (instant transitions, great INP)
+```
+
+</details>

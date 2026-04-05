@@ -54,16 +54,68 @@ Why `key` is important **→** Efficient updates, Avoiding bugs, and Performance
 <details>
 <summary>What does re-rendering mean in React?</summary>
 
-- **Understanding re-rendering:** Re-rendering in React is the process by which a component updates its output to the DOM in response to changes in its state or props. This ensures that the UI is always in sync with the underlying data.
-- Re-rendering occurs in the following scenarios:
-  - When a component's state changes using **`setState`**
-  - When a component receives new props from its parent component
-  - When the parent component re-renders, causing its child components to re-render as well
-- **The re-rendering process**
-  1. **State or props change**: When a component's state or props change, React schedules a re-render for that component.
-  2. **Render method**: React calls the component's **`render`** method to generate a new virtual DOM tree.
-  3. **Virtual DOM comparison**: React compares the new virtual DOM tree with the previous one using a diffing algorithm.
-  4. **DOM updates**: React calculates the minimal set of changes required and updates the actual DOM accordingly.
+- **The one rule:** Every re-render starts with a **state change**. That's the only trigger. Re-renders cascade **downward** from the component that owns the state — not sideways or upward.
+
+- **Common misconception — "props cause re-renders":**
+  Props are a **symptom**, not the cause. When a parent re-renders, all its children re-render **regardless of whether their props changed**. React can't reliably predict which descendants depend on the changed data, so it re-renders them all to stay safe.
+
+- **The re-rendering process:**
+  1. State changes → React schedules a re-render for that component
+  2. React calls the component function again → generates a new virtual DOM tree
+  3. Diffing → React compares new vs previous virtual DOM
+  4. Commit → React updates only the parts of the real DOM that changed
+
+- **Why new references matter:**
+  Every re-render calls the component function again, so every object/array/function inside it is a **new reference** in memory — even if the values are identical. React compares by reference (`===`), not by value.
+
+- **Opting out of re-renders — `React.memo`:**
+  Wraps a component to skip re-render if props haven't changed (shallow `===` comparison).
+
+  | Scenario                                  | Re-renders?                                   |
+  | ----------------------------------------- | --------------------------------------------- |
+  | No `memo`                                 | Always when parent re-renders                 |
+  | `memo` + primitive props                  | Skips if values are the same                  |
+  | `memo` + object/function props            | Still re-renders (new reference every render) |
+  | `memo` + `useMemo`/`useCallback` on props | Skips (stable references)                     |
+  | `memo` + custom comparator                | Your logic decides                            |
+
+```javascript
+const MyComponent = React.memo(
+  ({ user, onClick }) => {
+    /* ... */
+  },
+  (prevProps, nextProps) => {
+    // return true = skip re-render, false = re-render
+    return prevProps.user.id === nextProps.user.id;
+  },
+);
+```
+
+- **`useCallback` and stale closures:**
+  `useCallback` caches a function reference, but the function closes over values from the render it was created in. The deps array controls when to create a fresh closure:
+
+```javascript
+// BUG — empty deps, count is always 0 (stale closure)
+const handleClick = useCallback(() => {
+  console.log(count);
+}, []);
+
+// FIX 1 — add dependency (new function when count changes)
+const handleClick = useCallback(() => {
+  console.log(count);
+}, [count]);
+
+// FIX 2 — setter form, no dependency needed
+const increment = useCallback(() => {
+  setCount((prev) => prev + 1);
+}, []);
+```
+
+- **React Compiler (React 19):**
+  The React Compiler (previously React Forget) auto-inserts memoization at build time. It analyzes your code and adds `useMemo`/`useCallback`/`React.memo` equivalents automatically — making manual optimization unnecessary for most cases.
+
+- **Strict Mode double rendering:**
+  In development, React Strict Mode intentionally double-invokes component functions, `useState` initializers, and `useEffect` setup + cleanup. This helps catch impure components and missing cleanup. **Only happens in dev, stripped in production.** Next.js enables `reactStrictMode: true` by default.
 
 </details>
 
@@ -87,25 +139,6 @@ Both are React hooks for **memoization,** they cache a value to avoid expensive 
 - **Memoizing context values:** One of the most effective ways to reduce unnecessary rerenders is to memoize the context value. By using **`useMemo`**, you can ensure that the context value only changes when its dependencies change.
 - **Splitting contexts:** Another technique is to split your context into multiple smaller contexts. This way, you can isolate state changes to specific parts of your application, reducing the number of components that need to re-render.
 - **Using selectors:** Using selectors can help you only re-render components that actually need the updated context value.
-
-</details>
-
-<details>
-<summary>How do you handle asynchronous data loading in React applications?</summary>
-
-- **Using `useEffect` and `useState`**
-  - **Initialize state** → \*\*\*\*`const [data, setData] = useState(null);`
-  - **Fetch data** → using `useEffect` when the component mounts
-  - **Update state** → `setData(result);`
-- **Handling errors:** It's important to handle errors that may occur during data fetching. You can use a **`try-catch`** block within the **`useEffect`** to catch and handle errors.
-- **Using custom hooks:** For better code reusability, you can create custom hooks to handle data fetching. This allows you to encapsulate the data fetching logic and reuse it across multiple components.
-
-```javascript
-function useFetch(url) {
-  // fetching
-  return { data, loading, error };
-}
-```
 
 </details>
 
@@ -185,6 +218,35 @@ React Fiber is a re-implementation of React's core algorithm for rendering and r
 <summary>What is the <code>useRef</code> hook and what are its common use cases?</summary>
 
 The `useRef` hook creates a mutable object that persists across renders without causing re-renders. It is commonly used to access DOM elements or store mutable values.
+
+</details>
+
+<details>
+<summary>What is <code>useId</code> and why not just hardcode an ID?</summary>
+
+`useId` generates a unique, stable ID per component instance. It's used for linking HTML elements that need matching IDs (e.g. `aria-describedby`, `htmlFor`).
+
+- **Why not hardcode?** If a component is rendered multiple times, you'd have duplicate IDs — broken HTML, broken accessibility.
+- **Why not `Math.random()`?** It produces different values on server vs client, causing hydration mismatches.
+- `useId` is **SSR-safe** — it generates the same ID on server and client.
+
+```jsx
+function PasswordField() {
+  const hintId = useId();
+  return (
+    <>
+      <input type="password" aria-describedby={hintId} />
+      <p id={hintId}>Must be at least 18 characters</p>
+    </>
+  );
+}
+
+// Render it twice — each gets its own unique ID
+<PasswordField />  {/* hintId = ":r1:" */}
+<PasswordField />  {/* hintId = ":r2:" */}
+```
+
+- `aria-describedby` tells screen readers: "when the user focuses this input, also read the element with this ID." So a blind user hears the hint text alongside the input label.
 
 </details>
 
@@ -539,7 +601,7 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     // You can also log the error to an error reporting service
-    console.error('Error caught by ErrorBoundary: ', error, errorInfo);
+    console.error("Error caught by ErrorBoundary: ", error, errorInfo);
   }
 
   render() {
@@ -554,30 +616,56 @@ class ErrorBoundary extends Component {
 
 export default ErrorBoundary;
 
-
 // Usage
 <ErrorBoundary>
   <MyComponent />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
+
+- **What error boundaries do NOT catch:**
+  - **Event handlers** — use `try/catch` inside the handler
+  - **Async code** — `setTimeout`, promises, `fetch`
+  - **Server-side rendering**
+  - **Errors in the error boundary itself**
+
+  They only catch errors during **rendering**, **lifecycle methods**, and **constructors** of the tree below them.
+
+- **How to handle errors outside of boundaries:**
+  For event handlers and async errors, use regular `try/catch` and state-based error UI:
+
+- **Next.js error handling:**
+  - `error.js` (App Router) acts as an error boundary for its route segment — under the hood it wraps your `page.js` in a React error boundary. Same limitations apply (catches render errors, not event handler errors).
+  - `global-error.js` — catches errors in the root layout
+  - Each route segment can have its own `error.js` to catch errors in that subtree
+  - `error.js` receives two props: `error` (the Error object) and `reset` (function to retry rendering the segment)
+
+- **`error.digest` and dev vs prod:**
+  - `error.digest` is a unique hash auto-generated by Next.js for each error. In production, server-side error messages are **stripped for security** — only the digest is sent to the client so you can correlate it with server logs.
+
+  |                 | Dev                   | Prod                                 |
+  | --------------- | --------------------- | ------------------------------------ |
+  | `error.message` | Full message          | Generic (stripped)                   |
+  | `error.stack`   | Full stack trace      | Not available                        |
+  | `error.digest`  | Present               | Present (use to match server logs)   |
+  | Error overlay   | Next.js error overlay | No overlay, your `error.js` fallback |
+
+  The production pattern: log `error.digest` on the client (send to Sentry, etc.) and match it against server-side logs where the full error details live.
 
 </details>
 
 <details>
 <summary>What is React Suspense and what does it enable?</summary>
 
-React Suspense is a feature introduced by the React team to help manage asynchronous operations in a more declarative way. It allows you to specify a loading state (fallback) while waiting for some asynchronous operation to complete, such as data fetching or code splitting.
+Suspense lets a component "suspend" rendering while waiting for something async (data, code, etc.). React **unmounts** the children and shows the `fallback` until the async work resolves.
 
-- Code splitting with React.lazy
+- **How it works under the hood:** a component throws a Promise → React catches it at the nearest `<Suspense>` boundary → shows fallback → re-renders when the promise resolves.
 
-One of the primary use cases for React Suspense is code splitting. Code splitting allows you to load parts of your application on demand, which can significantly improve the initial load time of your application.
+- **Code splitting with `React.lazy`**
 
 ```javascript
-import React, { Suspense } from 'react';
+const LazyComponent = React.lazy(() => import("./LazyComponent"));
 
-const LazyComponent = React.lazy(() => import('./LazyComponent'));
-
-function MyComponent() {
+function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LazyComponent />
@@ -586,34 +674,67 @@ function MyComponent() {
 }
 ```
 
-- Data fetching with Suspense
+- **Data fetching — `useSuspenseQuery` vs `useQuery`**
 
-React Suspense can also be used for data fetching, it's not experimental anymore
+  |                     | `useQuery`                   | `useSuspenseQuery`                 |
+  | ------------------- | ---------------------------- | ---------------------------------- |
+  | Returns             | `{ data, isLoading, error }` | `{ data }` — always defined        |
+  | Loading state       | You handle it manually       | Delegates to `<Suspense>` boundary |
+  | Error state         | You handle it manually       | Delegates to error boundary        |
+  | Suspense compatible | No (doesn't throw a promise) | Yes (throws a promise)             |
 
 ```javascript
-import React, { Suspense } from 'react';
-import { useQuery } from 'react-query';
-
-function fetchData() {
-  return fetch('https://api.example.com/data').then((response) =>
-    response.json(),
-  );
-}
-
+// useQuery — manual loading/error handling
 function DataComponent() {
-  const { data } = useQuery('data', fetchData);
-  return <div>{data}</div>;
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchData,
+  });
+
+  if (isLoading) return <Spinner />;
+  if (error) return <Error />;
+  return <div>{data.name}</div>;
 }
 
-function MyComponent() {
-  return (
-    <Suspense fallback={<div>Loading data...</div>}>
-      <DataComponent />
-    </Suspense>
-  );
+// useSuspenseQuery — Suspense handles loading, error boundary handles errors
+function DataComponent() {
+  const { data } = useSuspenseQuery({ queryKey: ["data"], queryFn: fetchData });
+  return <div>{data.name}</div>; // data is always defined here
 }
+
+// wrap it
+<ErrorBoundary fallback={<Error />}>
+  <Suspense fallback={<Spinner />}>
+    <DataComponent />
+  </Suspense>
+</ErrorBoundary>;
 ```
 
+- **Suspense shows fallback, NOT an overlay**
+  Suspense **unmounts** children and replaces them with the fallback — you can't show a loading overlay on top of stale content with Suspense alone. For that, use `useTransition`:
+
+```javascript
+function SearchResults({ query }) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleSearch(newQuery) {
+    startTransition(() => {
+      setQuery(newQuery); // marks this update as non-urgent
+    });
+  }
+
+  return (
+    <div style={{ opacity: isPending ? 0.5 : 1 }}>
+      {" "}
+      {/* overlay effect */}
+      <Results query={query} />
+    </div>
+  );
+}
+// isPending = true while React renders the new tree in the background
+// Old UI stays visible (dimmed), no unmount, no fallback
+```
+
+- **Streaming SSR** — Suspense boundaries also define streaming chunks in Next.js. Server sends HTML for resolved parts immediately, suspended parts stream in as they resolve.
+
 </details>
-
-

@@ -1,6 +1,37 @@
 # JavaScript
 
 <details>
+<summary>What are the main types of variables in JavaScript?</summary>
+
+**Primitives** (7) — immutable, compared by value:
+
+| Type | Example |
+| --- | --- |
+| `string` | `"hello"` |
+| `number` | `42`, `3.14`, `Infinity`, `NaN` |
+| `boolean` | `true`, `false` |
+| `undefined` | `undefined` |
+| `null` | `null` |
+| `symbol` | `Symbol("id")` |
+| `bigint` | `9007199254740991n` |
+
+**Non-primitives** (1) — mutable, compared by reference:
+
+| Type | Includes |
+| --- | --- |
+| `object` | arrays, functions, dates, maps, sets, etc. |
+
+```javascript
+// primitives — compared by value
+"hello" === "hello"; // true
+
+// objects — compared by reference
+[1, 2] === [1, 2]; // false — different objects in memory
+```
+
+</details>
+
+<details>
 <summary>Explain the concept of "hoisting" in JavaScript</summary>
 
 Hoisting is a JavaScript mechanism where variable and function declarations are moved ("hoisted") to the top of their containing scope during the compile phase.
